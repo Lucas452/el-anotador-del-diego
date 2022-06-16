@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="jquery-3.2.1.min.js"></script>
+    <title>Truco Argentino</title>
+</head>
+
+<body>
+    <p class="warning">Las dimensiones de su dispositivo no es compatible con esta pagina web.</p>
+    <div class="general">
+        <div class="visible" id="visible">
+            <div class="fondo">
+                <div class="pantalla">
+                    <span>Ingresar los nombres de los equipos.</span>
+                    <input type="text" id="neA" placeholder="Equipo 1">
+                    <input type="text" id="neB" placeholder="Equipo 2">
+                    <input type="button" value="a 24" class="selector" id="24">
+                    <input type="button" value="a 30" class="selector2" id="30">
+                    <input type="button" value="Iniciar" id="iniciar">
+                </div>
+            </div>
+        </div>
+    
+        <div class="oculto" id="oculto">
+            <div class="fondo">
+                <div class="pantalla2">
+                    <span id="tipoDeJuego"></span>
+                    <input type="button" value="+" id="add1">
+                    <span id="ne1">Equipo 1</span>
+                    <span id="ne2">Equipo 2</span>
+                    <input type="button" value="+" id="add2">
+                    <!--las malas EQUIPO1-->
+                    <img src="images/0.png" class="foto" id="p11">
+                    <img src="images/0.png" class="foto" id="p12">
+                    <img src="images/0.png" class="foto" id="p13">
+                    <!--las buenas-->
+                    <img src="images/0.png" class="foto" id="p14">
+                    <img src="images/0.png" class="foto" id="p15">
+                    <img src="images/0.png" class="foto" id="p16">
+    
+                    <!--las malas EQUIPO2-->
+                    <img src="images/0.png" class="foto" id="p21">
+                    <img src="images/0.png" class="foto" id="p22">
+                    <img src="images/0.png" class="foto" id="p23">
+                    <!--las buenas-->
+                    <img src="images/0.png" class="foto" id="p24">
+                    <img src="images/0.png" class="foto" id="p25">
+                    <img src="images/0.png" class="foto" id="p26">
+
+                    <input type="button" value="-" id="rest1">
+                    <span name="contador 1" id="cont1">0</span>
+                    <input type="button" value="Fin" id="fin">
+                    <span name="contador 2" id="cont2">0</span>
+                    <input type="button" value="-" id="rest2">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#iniciar').on('click', cambiaraPantalla2);
+        $('#fin').on('click', cambiaraPantalla1);
+        $('#24').on('click', seleccionar24);
+        $('#30').on('click', seleccionar30);
+        $('#add1').on('click', puntoEquipo1);
+        $('#add2').on('click', puntoEquipo2);
+        $('#rest1').on('click', MpuntoEquipo1);
+        $('#rest2').on('click', MpuntoEquipo2);
+
+        var contA = 0;
+        var contB = 0;
+        var max = 0;
+
+        /*Codigo para sumar puntos dependiendo la cantidad limite*/
+        function puntoEquipo1() {
+            contA++;
+            $('#cont1').text(contA);
+            dibujar(1);
+            if (contA > max) {
+                setTimeout(() => {
+                    alert("Gano el equipo: " + $('#ne1').val()); $('#visible').removeClass('oculto').addClass('visible');
+                    $('#oculto').removeClass('visible').addClass('oculto');
+                    $('#24, #30').removeClass('activo');
+                }, 1);
+            }
+        }
+
+        function puntoEquipo2() {
+            contB++;
+            $('#cont2').text(contB);
+            dibujar(2);
+            if (contB > max) {
+                setTimeout(() => {
+                    alert("Gano el equipo: " + $('#ne2').val());
+                    $('#visible').removeClass('oculto').addClass('visible');
+                    $('#oculto').removeClass('visible').addClass('oculto');
+                    $('#24, #30').removeClass('activo');
+                }, 1);
+            }
+        }
+
+
+        /*Cambion de IMAGENES*/
+        function dibujar(ne) {
+            pad = parseInt($('#cont' + ne).text());
+            for (let i = 1; i <= 6; i++) {
+                if( max == 23 && pad >= 12){
+                    $('#p' + ne + '1').attr('src', 'images/5.png');
+                    $('#p' + ne + '2').attr('src', 'images/5.png');
+                    $('#p' + ne + '3').attr('src', 'images/2.png');
+                    pad -= 12;
+                    i += 3;
+                }
+                if (pad >= 5) {
+                    $('#p' + ne + i).attr('src', 'images/5.png');
+                    pad -= 5;
+                } else {
+                    $('#p' + ne + i).attr('src', 'images/' + pad + '.png');
+                    pad = 0
+                }
+                
+            }
+        }
+
+        /*CODIGO PARA RESTAR PUNTOS*/
+        function MpuntoEquipo1() {
+            if (contA > 0) {
+                contA--;
+                $('#cont1').text(contA);
+            }
+            dibujar(1);
+        }
+
+        function MpuntoEquipo2() {
+            if (contB > 0) {
+                contB--;
+                $('#cont2').text(contB);
+            }
+            dibujar(2);
+        }
+
+
+        /*Codigo para seleccionar cantidad de puntos*/
+        function seleccionar24() {
+            $('#24').addClass('activo');
+            $('#30').removeClass('activo');
+            $('#tipoDeJuego').text('a 24 puntos');
+            max = 23;
+        }
+        function seleccionar30() {
+            $('#30').addClass('activo');
+            $('#24').removeClass('activo');
+            $('#tipoDeJuego').text('a 30 puntos');
+            max = 29;
+        }
+
+
+        /*Codigo para Iniciar y Finalizar el juego*/
+        function cambiaraPantalla2() {
+            if ($('#neA').val() == '' || $('#neB').val() == '') {
+                alert("Ingresar el nombre de los equipos")
+            } else {
+                $('#visible').removeClass('visible').addClass('oculto');
+                $('#oculto').removeClass('oculto').addClass('visible');
+                $('#ne1').text($('#neA').val());
+                $('#ne2').text($('#neB').val());
+                $('#ne1').val() = $('#neA').val();
+                $('#ne2').val() = $('#neB').val();
+                $('#neA').val() = '';
+                $('#neB').val() = '';
+                $('.foto').attr('src', 'images/0.png');
+                $('#cont1, #cont2').text('0');
+                contA = 0;
+                contB = 0;
+            }
+        }
+        function cambiaraPantalla1() {
+            $('#visible').removeClass('oculto').addClass('visible');
+            $('#oculto').removeClass('visible').addClass('oculto');
+            $('#24, #30').removeClass('activo');
+            $('#cont1, #cont2').text('0');
+            contA = 0;
+            contB = 0;
+        };
+
+
+
+
+    </script>
+</body>
+
+</html>
